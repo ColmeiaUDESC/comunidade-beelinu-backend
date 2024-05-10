@@ -23,12 +23,12 @@ const create = async (req, res) => {
     res.status(201).send({
       message: "Player created successfully",
       player: {
-        id: player[0].id,
+        id: player[0].player_id,
         username,
         email,
       },
       inventory: {
-        id: inventory[0].id,
+        id: inventory[0].inventory_id,
         player_id: inventory[0].player_id,
         id_items: inventory[0].id_items,
       },
@@ -48,7 +48,7 @@ const findAll = async (req, res) => {
         .send({ message: "There are no registered players" });
     }
 
-    res.send(players);
+    res.status(201).send(players);
   } catch (err) {
     res.status(500).send({ message: err.message });
   }
@@ -57,8 +57,19 @@ const findAll = async (req, res) => {
 const findById = async (req, res) => {
   try {
     const player = req.player;
-
-    res.send(player[0]);
+    const inventory = await inventoryService.findById(player[0].player_id)
+    res.status(201).send({
+      player: {
+        id: player[0].player_id,
+        username: player[0].username,
+        email: player[0].email,
+      },
+      inventory: {
+        id: inventory[0].inventory_id,
+        player_id: inventory[0].player_id,
+        id_items: inventory[0].id_items,
+      },
+    });;
   } catch (err) {
     res.status(500).send({ message: err.message });
   }
