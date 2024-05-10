@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS inventory;
+DROP TABLE IF EXISTS server;
 DROP TABLE IF EXISTS player;
 
 CREATE TABLE player (
@@ -15,4 +16,11 @@ CREATE TABLE inventory (
     CONSTRAINT fk_inventory
         FOREIGN KEY(player_id)
             REFERENCES player(player_id)
-)
+);
+
+CREATE TABLE server (
+  server_id SERIAL PRIMARY KEY,
+  server_name text,
+  server_ip text,
+  server_port integer
+);

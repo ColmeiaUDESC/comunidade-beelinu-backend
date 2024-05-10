@@ -2,17 +2,17 @@ import express, { json } from "express";
 import dotenv from "dotenv";
 dotenv.config();
 
-import userRoute from "./src/routes/player.routes.js";
+import playerRoute from "./src/routes/player.routes.js";
+import serverRoute from "./src/routes/server.routes.js"
 //import authRoute from "./src/routes/auth.routes.js";
-//import newsRoute from "./src/routes/news.routes.js";
 
 
 const app = express();
 
 app.use(json());
-app.use("/player", userRoute);
+app.use("/player", playerRoute);
+app.use("/server", serverRoute)
 //app.use("/auth", authRoute);
-//app.use("/news", newsRoute);
 
 const port = process.env.SERVER_PORT || 3000;
 
