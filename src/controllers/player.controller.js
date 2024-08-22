@@ -1,15 +1,17 @@
 import playerService from "../services/player.service.js";
 import inventoryService from "../services/inventory.service.js";
+import bcrypt from "bcrypt";
 
 const create = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    var { username, email, password } = req.body;
 
     if (!username || !email || !password) {
-      res.status(400).send({ message: "Submit all fields for registration" });
+      return res.status(400).send({ message: "Submit all fields for registration" });
     }
 
-    const player = await playerService.create(req.body);
+    password = await bcrypt.hash(password, 10);
+    const player = await playerService.create({username, email, password});
 
     if (!player) {
       return res.status(400).send({ message: "Error creating Player" });
@@ -75,4 +77,19 @@ const findById = async (req, res) => {
   }
 };
 
-export default { create, findAll, findById };
+const removePlayer = async (req, res) => {
+  try {
+    const id = req.params.id;
+    if(req.id != id){
+      return res.status(401).send({ message: "Unauthorized" });
+    }
+    const inventory = await inventoryService.findById(id);
+    await inventoryService.remove(inventory[0].inventory_id);
+    await playerService.remove(id);
+    return res.status(200).send({ message: `Player: ${id} removido!` });
+  } catch (err) {
+    res.status(500).send({ message: err.message });
+  }
+}
+
+export default { create, findAll, findById, removePlayer };

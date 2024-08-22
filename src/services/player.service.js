@@ -5,9 +5,11 @@ const create = (body) => sql`INSERT INTO player (username, email, password)
 `;
 const findAllService = () => sql`SELECT * FROM player`;
 const findById = (id) => sql`SELECT * FROM player WHERE player_id = ${id}`;
+const remove = (id) => sql`DELETE FROM player WHERE player_id = ${id}`
 
 export default {
   create,
   findAllService,
   findById,
+  remove,
 };

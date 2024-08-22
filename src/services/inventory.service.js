@@ -7,5 +7,6 @@ const addItem = (player_id, id_items) =>
 const findById = (id) => sql`SELECT * FROM inventory WHERE player_id = ${id}`;
 const removeItem = (player_id, item_id) =>
   sql`UPDATE inventory SET id_items = array_remove(id_items, ${item_id}) WHERE player_id = ${player_id} returning *`;
+const remove = (id) => sql`DELETE FROM inventory WHERE inventory_id = ${id}`;
 
-export default { create, findById, addItem, removeItem };
+export default { create, findById, addItem, removeItem, remove };
