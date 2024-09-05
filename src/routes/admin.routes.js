@@ -1,16 +1,19 @@
 import { Router } from "express";
 import adminController from "../controllers/admin.controller.js";
 import { adminAuthMiddleware } from "../middlewares/auth.middleware.js";
-import playerMiddlewares from "../middlewares/global.middlewares.js";
+import globalMiddlewares from "../middlewares/global.middlewares.js";
 const router = Router();
 
-router.post("/", adminController.create);
+router.post("/", adminAuthMiddleware, adminController.create);
 router.delete("/:id", adminAuthMiddleware, adminController.removeAdmin);
-router.get("/", adminController.findAll);
+router.get("/", adminAuthMiddleware, adminController.findAll);
 router.get(
   "/:id",
-  playerMiddlewares.validAdmin,
+  adminAuthMiddleware,
+  globalMiddlewares.validAdmin,
   adminController.findById
 );
+
+adminController.initDefaultAdmin();
 
 export default router;

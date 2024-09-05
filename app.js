@@ -12,7 +12,7 @@ const app = express();
 
 app.use(json());
 app.use("/player", playerRoute);
-app.use("/admin", adminRoute)
+app.use("/admin", adminRoute);
 app.use("/server", serverRoute);
 app.use("/auth", authRoute);
 

@@ -42,39 +42,39 @@ export const adminAuthMiddleware = (req, res, next) => {
 };
 
 export const playerAuthMiddleware = (req, res, next) => {
-    try {
-      const { authorization } = req.headers;
-  
-      if (!authorization) {
-        return res.sendStatus(401);
-      }
-  
-      const parts = authorization.split(" ");
-  
-      if (parts.length !== 2) {
-        return res.sendStatus(401);
-      }
-  
-      const [schema, token] = parts;
-  
-      if (schema !== "Bearer") {
-        return res.send(401);
-      }
-  
-      jwt.verify(token, process.env.SECRET_JWT, async (error, decoded) => {
-        if (error) {
-          return res.status(401).send({ message: "Token invlaid" });
-        }
-        const player = await playerService.findById(decoded.id);
-  
-        if (player.length == 0) {
-          return res.status(401).send({ message: "Token invlaid" });
-        }
-        req.id = player[0].player_id;
-        req.player = player;
-        return next();
-      });
-    } catch (err) {
-      res.status(500).sendStatus({ message: err.message });
+  try {
+    const { authorization } = req.headers;
+
+    if (!authorization) {
+      return res.sendStatus(401);
     }
-  };
+
+    const parts = authorization.split(" ");
+
+    if (parts.length !== 2) {
+      return res.sendStatus(401);
+    }
+
+    const [schema, token] = parts;
+
+    if (schema !== "Bearer") {
+      return res.send(401);
+    }
+
+    jwt.verify(token, process.env.SECRET_JWT, async (error, decoded) => {
+      if (error) {
+        return res.status(401).send({ message: "Token invlaid" });
+      }
+      const player = await playerService.findById(decoded.id);
+
+      if (player.length == 0) {
+        return res.status(401).send({ message: "Token invlaid" });
+      }
+      req.id = player[0].player_id;
+      req.player = player;
+      return next();
+    });
+  } catch (err) {
+    res.status(500).sendStatus({ message: err.message });
+  }
+};

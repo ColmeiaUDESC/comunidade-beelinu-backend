@@ -6,7 +6,7 @@ const addItems = async (req, res) => {
     const { id_items } = req.body;
 
     if (!player || !id_items) {
-      return res.status(500).send({ message: "Player ou id_item incorrect" });
+      return res.status(500).send({ message: "Player or id_item incorrect" });
     }
 
     const inventory = await inventoryService.addItem(

@@ -2,7 +2,7 @@ import { sql } from "../database/db.js";
 import jwt from "jsonwebtoken";
 
 const adminLoginService = (email) =>
-    sql`SELECT * FROM admin WHERE email = ${email}`;
+  sql`SELECT * FROM admin WHERE email = ${email}`;
 
 const playerLoginService = (email) =>
   sql`SELECT * FROM player WHERE email = ${email}`;

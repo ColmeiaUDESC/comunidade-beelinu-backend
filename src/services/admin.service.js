@@ -5,6 +5,7 @@ const create = (body) => sql`INSERT INTO admin (username, email, password)
 `;
 const findAllService = () => sql`SELECT * FROM admin`;
 const findById = (id) => sql`SELECT * FROM admin WHERE admin_id = ${id}`;
+const findByUsername = (name) => sql`SELECT * FROM admin WHERE username = ${name}`
 const remove = (id) => sql`DELETE FROM admin WHERE admin_id = ${id}`;
 
 export default {
@@ -12,4 +13,5 @@ export default {
   findAllService,
   findById,
   remove,
+  findByUsername,
 };

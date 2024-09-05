@@ -10,7 +10,7 @@ const create = async (req, res) => {
     }
 
     password = await bcrypt.hash(password, 10);
-    const admin = await adminService.create({username, email, password});
+    const admin = await adminService.create({ username, email, password });
 
     if (!admin) {
       return res.status(400).send({ message: "Error creating admin" });
@@ -70,4 +70,32 @@ const removeAdmin = async (req, res) => {
   }
 }
 
-export default { create, findAll, findById, removeAdmin };
+const initDefaultAdmin = async () => {
+  try {
+    const username = process.env.ADMIN_USERNAME;
+    const email = process.env.ADMIN_EMAIL;
+    const rawPassword = process.env.ADMIN_PASSWORD;
+
+    if (!username || !email || !rawPassword) {
+      console.warn("Environment variables for admin credentials were not informed. Default admin won't be created.");
+      return;
+    }
+
+    if ((await adminService.findByUsername(username)).count) {
+      return;
+    }
+
+    console.log("Creating default admin");
+
+    const password = await bcrypt.hash(rawPassword, 10);
+    const admin = await adminService.create({ username, email, password });
+
+    if (!admin) {
+      console.error('Could not create default admin');
+    }
+  } catch (err) {
+    console.error(`Unexpected error while creating default admin: ${err.message}`)
+  }
+}
+
+export default { create, findAll, findById, removeAdmin, initDefaultAdmin };
