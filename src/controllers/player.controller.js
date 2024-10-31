@@ -1,5 +1,6 @@
 import playerService from "../services/player.service.js";
 import inventoryService from "../services/inventory.service.js";
+import { auth_player } from "./server.controller.js";
 import bcrypt from "bcrypt";
 
 const create = async (req, res) => {
@@ -7,11 +8,13 @@ const create = async (req, res) => {
     var { username, email, password } = req.body;
 
     if (!username || !email || !password) {
-      return res.status(400).send({ message: "Submit all fields for registration" });
+      return res
+        .status(400)
+        .send({ message: "Submit all fields for registration" });
     }
 
     password = await bcrypt.hash(password, 10);
-    const player = await playerService.create({username, email, password});
+    const player = await playerService.create({ username, email, password });
 
     if (!player) {
       return res.status(400).send({ message: "Error creating Player" });
@@ -59,7 +62,7 @@ const findAll = async (req, res) => {
 const findById = async (req, res) => {
   try {
     const player = req.player;
-    const inventory = await inventoryService.findById(player[0].player_id)
+    const inventory = await inventoryService.findById(player[0].player_id);
     res.status(201).send({
       player: {
         id: player[0].player_id,
@@ -71,7 +74,7 @@ const findById = async (req, res) => {
         player_id: inventory[0].player_id,
         id_items: inventory[0].id_items,
       },
-    });;
+    });
   } catch (err) {
     res.status(500).send({ message: err.message });
   }
@@ -80,7 +83,7 @@ const findById = async (req, res) => {
 const removePlayer = async (req, res) => {
   try {
     const id = req.params.id;
-    if(req.id != id){
+    if (req.id != id) {
       return res.status(401).send({ message: "Unauthorized" });
     }
     const inventory = await inventoryService.findById(id);
@@ -90,6 +93,36 @@ const removePlayer = async (req, res) => {
   } catch (err) {
     res.status(500).send({ message: err.message });
   }
-}
+};
 
-export default { create, findAll, findById, removePlayer };
+const getPin = async (req, res) => {
+  try {
+    const id = req.id;
+    const player = {
+      player_id: req.player[0].player_id,
+      username: req.player[0].username,
+      email: req.player[0].email
+    }
+
+    const index = auth_player.findIndex((obj) => obj.player_id == id);
+    if(index === -1){
+      return res.send(401);
+    }
+    
+    const body = {
+      player,
+      pin: auth_player[index].pin,
+    };
+    res.send(body);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+};
+
+export default {
+  create,
+  findAll,
+  findById,
+  removePlayer,
+  getPin,
+};

@@ -6,6 +6,7 @@ import { playerAuthMiddleware } from "../middlewares/auth.middleware.js";
 const router = Router();
 
 router.post("/", adminAuthMiddleware, serverController.create);
+router.post("/temporary/generatepin/:id", serverController.temporaryPIN);
 router.get("/:id", serverController.findById);
 router.delete("/:id", adminAuthMiddleware, serverController.removeServer);
 router.post("/temporary", playerAuthMiddleware, serverController.createTemporary)

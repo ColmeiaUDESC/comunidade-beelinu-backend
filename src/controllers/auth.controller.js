@@ -1,5 +1,10 @@
 import bcrypt from "bcrypt";
-import { adminLoginService, playerLoginService, generateToken } from "../services/auth.service.js";
+import {
+  adminLoginService,
+  playerLoginService,
+  generateToken,
+} from "../services/auth.service.js";
+import { auth_player } from "./server.controller.js";
 
 const adminLogin = async (req, res) => {
   try {
@@ -15,7 +20,7 @@ const adminLogin = async (req, res) => {
     if (!passwordIsValid) {
       return res.status(404).send({ message: "Admin or password not found" });
     }
-    const token = generateToken(admin[0].admin_id)
+    const token = generateToken(admin[0].admin_id);
 
     res.send({ token });
   } catch (err) {
@@ -38,7 +43,7 @@ const playerLogin = async (req, res) => {
       return res.status(404).send({ message: "player or password not found" });
     }
 
-    const token = generateToken(player[0].player_id)
+    const token = generateToken(player[0].player_id);
 
     res.send({ token });
   } catch (err) {
@@ -46,4 +51,29 @@ const playerLogin = async (req, res) => {
   }
 };
 
-export { adminLogin, playerLogin };
+const temporaryAuth = async (req, res) => {
+  try {
+    const { player, pin } = req.body;
+
+    if (!pin || !player) {
+      return res.status(404).send({ message: "Missing PIN or Player" });
+    }
+    const index = auth_player.findIndex((obj) => obj.player_id == player.player_id);
+
+    console.log(index)
+    if (index == -1){
+      return res.status(404).send({ message: "Missing PIN" });
+    }
+
+    if (auth_player[index].pin != pin) {
+      return res.status(404).send({ message: "Wrong PIN" });;
+    }
+    
+    auth_player.splice(index, 1);
+    res.send({ player, pin });
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+};
+
+export { adminLogin, playerLogin, temporaryAuth };

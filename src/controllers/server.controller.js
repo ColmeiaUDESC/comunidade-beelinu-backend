@@ -1,6 +1,7 @@
 import serverServices from "../services/server.service.js";
 
 const temporaryServers = [];
+export const auth_player = [];
 var temporaryServerId = 0;
 
 const create = async (req, res) => {
@@ -110,4 +111,34 @@ const findById = async (req, res) => {
   }
 }
 
-export default { create, createTemporary, removeTemporary, findAll, findTemporaryById, findById, removeServer };
+const temporaryPIN = async (req, res) => {
+  try {
+    const id = req.params.id;
+    console.log(id)
+
+    if (!id) {
+      return res.status(404).send({ message: "Missing ID" });
+    }
+
+    const index = auth_player.findIndex((obj) => obj.player_id == id);
+    if(index != -1){
+      auth_player.splice(index, 1);
+    }
+
+    let pin = "";
+    for (let i = 0; i < 8; i++) {
+      pin += Math.floor(Math.random() * 10);
+    }
+
+    auth_player.push({
+      player_id: id,
+      pin: pin,
+    });
+
+    res.send({ message: "verify" });
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+};
+
+export default { create, createTemporary, removeTemporary, findAll, findTemporaryById, findById, removeServer, temporaryPIN };
