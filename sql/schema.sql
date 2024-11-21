@@ -4,22 +4,22 @@ DROP TABLE IF EXISTS player;
 DROP TABLE IF EXISTS admin;
 
 CREATE TABLE player (
-  player_id  SERIAL PRIMARY KEY,
+  player_id UUID NOT NULL PRIMARY KEY,
   username text UNIQUE NOT NULL,
   email text NOT NULL,
   password text NOT NULL
 );
 
 CREATE TABLE admin (
-  admin_id  SERIAL PRIMARY KEY,
+  admin_id UUID NOT NULL PRIMARY KEY,
   username text UNIQUE NOT NULL,
   email text NOT NULL,
   password text NOT NULL
 );
 
 CREATE TABLE inventory (
-    inventory_id SERIAL PRIMARY KEY,
-    player_id integer,
+    inventory_id UUID NOT NULL PRIMARY KEY,
+    player_id UUID,
     id_items integer ARRAY,
     CONSTRAINT fk_inventory
         FOREIGN KEY(player_id)
@@ -27,7 +27,7 @@ CREATE TABLE inventory (
 );
 
 CREATE TABLE server (
-  server_id SERIAL PRIMARY KEY,
+  server_id UUID NOT NULL PRIMARY KEY,
   server_name text,
   server_ip text,
   server_port integer

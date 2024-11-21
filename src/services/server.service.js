@@ -4,8 +4,8 @@ const create = (
   server_name,
   server_ip,
   server_port
-) => sql`INSERT INTO server (server_name, server_ip, server_port)
-VALUES (${server_name}, ${server_ip}, ${server_port}) returning *
+) => sql`INSERT INTO server (server_id, server_name, server_ip, server_port)
+VALUES (uuid_generate_v4(), ${server_name}, ${server_ip}, ${server_port}) returning *
 `;
 const findById = (id) => sql`SELECT * FROM server WHERE server_id = ${id}`;
 const findAll = () => sql`SELECT * FROM server`;

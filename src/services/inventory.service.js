@@ -1,7 +1,7 @@
 import { sql } from "../database/db.js";
 
 const create = (player_id) =>
-  sql`INSERT INTO inventory (player_id) VALUES (${player_id}) returning *`;
+  sql`INSERT INTO inventory (inventory_id, player_id) VALUES (uuid_generate_v4(), ${player_id}) returning *`;
 const addItem = (player_id, id_items) =>
   sql`UPDATE inventory SET id_items = array_cat(id_items, ${id_items}) WHERE player_id = ${player_id} returning *`;
 const findById = (id) => sql`SELECT * FROM inventory WHERE player_id = ${id}`;

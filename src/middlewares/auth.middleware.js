@@ -66,13 +66,25 @@ export const playerAuthMiddleware = (req, res, next) => {
         return res.status(401).send({ message: "Token invlaid" });
       }
       const player = await playerService.findById(decoded.id);
+      const admin = await adminService.findById(decoded.id)
 
-      if (player.length == 0) {
-        return res.status(401).send({ message: "Token invlaid" });
+      if(player.length == 0 && admin.length == 0){
+        return res.status(401).send({ message: "Token iinvlaid" });
       }
-      req.id = player[0].player_id;
-      req.player = player;
-      return next();
+
+      if (admin.length != 0){
+        req.id = admin[0].admin_id;
+        req.admin = admin;
+        req.player = []
+        return next();
+      }
+      
+      if (player.length != 0) {
+        req.id = player[0].player_id;
+        req.player = player;
+        req.admin = []
+        return next();
+      }
     });
   } catch (err) {
     res.status(500).sendStatus({ message: err.message });

@@ -83,7 +83,7 @@ const findById = async (req, res) => {
 const removePlayer = async (req, res) => {
   try {
     const id = req.params.id;
-    if (req.id != id) {
+    if (req.id != id && req.admin.lenght == 0) {
       return res.status(401).send({ message: "Unauthorized" });
     }
     const inventory = await inventoryService.findById(id);
